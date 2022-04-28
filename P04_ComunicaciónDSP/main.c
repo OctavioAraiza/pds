@@ -69,14 +69,14 @@ static void MX_USART1_UART_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	uint16_t raw;				// Valor digital de conversión del ADC1
-	float voltaje;			// Voltaje equivalente de conversión digital
-	float y = 0;				// Valor filtrado
-	float alpha = 0.3;	// Valor de alpha para filtro EMA
-	float lastY = 0;		// Último valor de y calculado para filtro EMA
-	float coll = 0;			// Acumulador para filtro SMA
-	int cont = 1;				// Contador para filtro SMA
-	char msg[10];				// Variable para transmitir por UART
+  uint16_t raw;		// Valor digital de conversión del ADC1
+  float voltaje;	// Voltaje equivalente de conversión digital
+  float y = 0;		// Valor filtrado
+  float alpha = 0.3;	// Valor de alpha para filtro EMA
+  float lastY = 0;	// Último valor de y calculado para filtro EMA
+  float coll = 0;	// Acumulador para filtro SMA
+  int cont = 1;		// Contador para filtro SMA
+  char msg[10];		// Variable para transmitir por UART
 
   /* USER CODE END 1 */
 
@@ -112,66 +112,66 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	  // ----- ENCENDER Y APAGAR LED -----
-	  /*
-	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, 1);		// Encender LED
-	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, 0);		// Apagar LED
-	  */
+    // ----- ENCENDER Y APAGAR LED -----
+    /*
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, 1);	// Encender LED
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, 0);	// Apagar LED
+    */
 
-	  // ----- REALIZAR MEDICIÓN CON EL ADC1 (12/6 BITS) -----
-	  /*
-	  HAL_ADC_Start(&hadc1);																								// Activar ADC1
-	  HAL_GPIO_WritePin(GPIOC,GPIO_PIN_13,1);																// Encender LED
-	  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);											// Realizar conversión
-	  raw = HAL_ADC_GetValue(&hadc1);																				// Almacenar valor convertido
-	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, 0);															// Apagar LED
-	  // ----- TRANSMITIR MEDICIÓN POR UART -----
-	  HAL_Delay(5);																													// Retraso de 5 ms
-	  sprintf(msg,"%hu\r\n", raw);
-	  HAL_UART_Transmit(&huart1,(uint8_t*)msg,strlen(msg), HAL_MAX_DELAY);
-	  HAL_Delay(5);																													// Retraso de 5 ms
-	  */
+    // ----- REALIZAR MEDICIÓN CON EL ADC1 (12/6 BITS) -----
+    /*
+    HAL_ADC_Start(&hadc1);							// Activar ADC1
+    HAL_GPIO_WritePin(GPIOC,GPIO_PIN_13,1);					// Encender LED
+    HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);				// Realizar conversión
+    raw = HAL_ADC_GetValue(&hadc1);						// Almacenar valor convertido
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, 0);					// Apagar LED
+    // ----- TRANSMITIR MEDICIÓN POR UART -----
+    HAL_Delay(5);								// Retraso de 5 ms
+    sprintf(msg,"%hu\r\n", raw);
+    HAL_UART_Transmit(&huart1,(uint8_t*)msg,strlen(msg), HAL_MAX_DELAY);
+    HAL_Delay(5);								// Retraso de 5 ms
+    */
 
-	  // ----- FILTRO EMA -----
-	  /*
-	  HAL_ADC_Start(&hadc1);															// Activar ADC1
-	  HAL_GPIO_WritePin(GPIOC,GPIO_PIN_13,1);							// Encender LED
-	  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);		// Realizar conversión
-	  raw = HAL_ADC_GetValue(&hadc1);											// Almacenar valor convertido
-	  voltaje = 3.3*((float)raw)/4095;										// Obtener voltaje equivalente a la conversión digital
-	  y = (alpha*voltaje) + (1-alpha)*lastY;							// Calcular valor filtrado de señal de voltaje
-	  lastY = y;																					// Almacenar último valor calculado de y
-	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, 0);						// Apagar LED
-	  */
+    // ----- FILTRO EMA -----
+    /*
+    HAL_ADC_Start(&hadc1);				// Activar ADC1
+    HAL_GPIO_WritePin(GPIOC,GPIO_PIN_13,1);		// Encender LED
+    HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);	// Realizar conversión
+    raw = HAL_ADC_GetValue(&hadc1);			// Almacenar valor convertido
+    voltaje = 3.3*((float)raw)/4095;			// Obtener voltaje equivalente a la conversión digital
+    y = (alpha*voltaje) + (1-alpha)*lastY;		// Calcular valor filtrado de señal de voltaje
+    lastY = y;																					// Almacenar último valor calculado de y
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, 0);		// Apagar LED
+    */
 
-	  // ----- FILTRO EMA -----
-	  /*
-	  HAL_ADC_Start(&hadc1);																								// Activar ADC1
-	  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);											// Realizar conversión
-	  raw = HAL_ADC_GetValue(&hadc1);																				// Almacenar valor convertido
-	  voltaje = 3.3*((float)raw)/4095;																			// Obtener voltaje equivalente a la conversión digital
-	  y = (alpha*voltaje) + (1-alpha)*lastY;																// Calcular valor filtrado de señal de voltaje
-	  lastY = y;																														// Almacenar último valor calculado de y
-	  sprintf(msg,"%.3f,", voltaje);																				// Transmitir voltaje medido por UART
-	  HAL_UART_Transmit(&huart1,(uint8_t*)msg,strlen(msg), HAL_MAX_DELAY);
-	  sprintf(msg,"%.3f\r\n", y);																						// Transmitir valor filtrado por UART
-	  HAL_UART_Transmit(&huart1,(uint8_t*)msg,strlen(msg), HAL_MAX_DELAY);
-	  HAL_Delay(500);																												// Retardo de 500 ms
-	  */
+    // ----- FILTRO EMA -----
+    /*
+    HAL_ADC_Start(&hadc1);																								// Activar ADC1
+    HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);				// Realizar conversión
+    raw = HAL_ADC_GetValue(&hadc1);						// Almacenar valor convertido
+    voltaje = 3.3*((float)raw)/4095;						// Obtener voltaje equivalente a la conversión digital
+    y = (alpha*voltaje) + (1-alpha)*lastY;					// Calcular valor filtrado de señal de voltaje
+    lastY = y;									// Almacenar último valor calculado de y
+    sprintf(msg,"%.3f,", voltaje);						// Transmitir voltaje medido por UART
+    HAL_UART_Transmit(&huart1,(uint8_t*)msg,strlen(msg), HAL_MAX_DELAY);
+    sprintf(msg,"%.3f\r\n", y);							// Transmitir valor filtrado por UART
+    HAL_UART_Transmit(&huart1,(uint8_t*)msg,strlen(msg), HAL_MAX_DELAY);
+    HAL_Delay(500);								// Retardo de 500 ms
+    */
 
-	  // ----- FILTRO SMA -----
-	  HAL_ADC_Start(&hadc1);																									// Activar ADC1
-	  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);												// Realizar conversión
-	  raw = HAL_ADC_GetValue(&hadc1);																					// Almacenar valor convertido
-	  voltaje = 3.3*((float)raw)/4095;																				// Obtener voltaje equivalente a la conversión digital
-	  coll = coll + voltaje;																									// Acumulador de valores medidos de voltaje
-	  y = coll/cont;																													// Calcular valor filtrado de señal de voltaje
-	  cont = cont + 1;																												// Incrementar contador
-	  sprintf(msg,"%.3f,", voltaje);																					// Transmitir voltaje medido por UART
-	  HAL_UART_Transmit(&huart1,(uint8_t*)msg,strlen(msg), HAL_MAX_DELAY);
-	  sprintf(msg,"%.3f\r\n", y);																							// Transmitir valor filtrado por UART
-	  HAL_UART_Transmit(&huart1,(uint8_t*)msg,strlen(msg), HAL_MAX_DELAY);
-	  HAL_Delay(500);																													// Retardo de 500 ms
+    // ----- FILTRO SMA -----
+    HAL_ADC_Start(&hadc1);																									// Activar ADC1
+    HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);				// Realizar conversión
+    raw = HAL_ADC_GetValue(&hadc1);						// Almacenar valor convertido
+    voltaje = 3.3*((float)raw)/4095;						// Obtener voltaje equivalente a la conversión digital
+    coll = coll + voltaje;							// Acumulador de valores medidos de voltaje
+    y = coll/cont;								// Calcular valor filtrado de señal de voltaje
+    cont = cont + 1;								// Incrementar contador
+    sprintf(msg,"%.3f,", voltaje);						// Transmitir voltaje medido por UART
+    HAL_UART_Transmit(&huart1,(uint8_t*)msg,strlen(msg), HAL_MAX_DELAY);
+    sprintf(msg,"%.3f\r\n", y);							// Transmitir valor filtrado por UART
+    HAL_UART_Transmit(&huart1,(uint8_t*)msg,strlen(msg), HAL_MAX_DELAY);
+    HAL_Delay(500);								// Retardo de 500 ms
   }
   /* USER CODE END 3 */
 }
